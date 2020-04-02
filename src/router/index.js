@@ -1,23 +1,57 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import AuthGuard from './auth-guard'
+import Home from '../components/home/Home'
+import Ad from '../components/ads/Ad'
+import AdList from '../components/ads/AdList'
+import NewAd from '../components/ads/NewAd'
+import Login from '../components/auth/Login'
+import Registration from '../components/auth/Registration'
+import Orders from '../components/user/Orders'
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: '',
+    name: 'home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: Registration
+  },
+  {
+    path: '/ad/:id',
+    name: 'ad',
+    props: true,
+    component: Ad
+  },
+  {
+    path: '/list',
+    name: 'list',
+    component: AdList,
+    beforEnter: AuthGuard
+  },
+  {
+    path: '/new',
+    name: 'newadd',
+    component: NewAd,
+    beforEnter: AuthGuard
+  },
+  {
+    path: '/orders',
+    name: 'orders',
+    component: Orders,
+    beforEnter: AuthGuard
+  },
 ]
 
 const router = new VueRouter({
