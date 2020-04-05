@@ -1,7 +1,16 @@
 <template>
     <v-container>
         <v-layout row>
-            <v-flex xs12 sm6 offset-md3>
+            <v-flex xs12 class="text-center pt12" v-if="loader">
+                <v-progress-circular
+                        :size="50"
+                        color="primary"
+                        indeterminate
+                ></v-progress-circular>
+            </v-flex>
+            <v-flex xs12 sm6 offset-md3 v-else-if="!loader && orders.length !== 0">
+                <h2 class="text--secondary mb-3" >Orders</h2>
+
                 <v-list
                         subheader
                         two-line
@@ -11,7 +20,6 @@
                         :key="order.id"
 
                 >
-<h2 class="text--secondary mb-3" >Orders</h2>
                     <v-list-item-group
                     >
                         <v-list-item>
@@ -19,7 +27,6 @@
                                 <v-list-item-action>
                                     <v-checkbox
                                             @change="markDone(order)"
-                                            :input-value="false"
                                     ></v-checkbox>
                                 </v-list-item-action>
 
@@ -38,6 +45,9 @@
                     </v-list-item-group>
                 </v-list>
             </v-flex>
+            <v-flex xs12 class="text-center" v-else>
+                <h2 class="text--primary">You have no orders</h2>
+            </v-flex>
         </v-layout>
     </v-container>
 </template>
@@ -45,17 +55,25 @@
 <script>
     export default {
         name: "Orders",
-        data() {
-            return {
-                orders: [
-                    {id: 125, name: 'Tigran', phone: '+37493383604', adId: '546', done: true}
-                ]
+        computed: {
+            loader() {
+                return this.$store.getters.loader
+            },
+            orders() {
+                return this.$store.getters.orders
             }
         },
         methods: {
             markDone(order) {
-                order.done = true
+                this.$store.dispatch('MARK_DONE_ORDER', order.id)
+                    .then(() => {
+                        order.done = true
+                    })
+                    .catch(() => {})
             }
+        },
+        created() {
+            this.$store.dispatch('FETCH_ORDERS')
         }
     }
 </script>

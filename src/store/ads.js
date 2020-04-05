@@ -1,5 +1,6 @@
 import * as fb from 'firebase/app'
 import 'firebase/database'
+import 'firebase/storage'
 
 
 class Ad {
@@ -24,6 +25,11 @@ export default {
         },
         LOAD_ADS(state, payload) {
             state.ads = payload
+        },
+        UPDATE_ADS(state, {title, description, id}) {
+            const ads = state.ads.find(i => i.id === id)
+            ads.title = title
+            ads.description = description
         }
     },
     actions: {
@@ -31,13 +37,27 @@ export default {
             commit('CLEAR_PHASE')
             commit('LOADING_PHASE', true)
 
+            const image = payload.image
+
             try {
-                const newAd = new Ad(payload.title, payload.description, getters.user.id, payload.promo, payload.src)
+                const newAd = new Ad(payload.title, payload.description, getters.user.id, payload.promo, '')
                 const fbValue = await fb.database().ref('adsproject').push(newAd)
+
+                const imgExt = image.name.slice(image.name.lastIndexOf('.'))
+
+                const fileData = await fb.storage().ref(`ads/${fbValue.key}.${imgExt}`).put(image)
+                // const src = fileData.metadata.downloadURLs[0]
+                const src = await fb.storage().ref().child(fileData.ref.fullPath).getDownloadURL()
+                await fb.database().ref('ads').child(fbValue.key).update({
+                    src
+                })
+
+
                 commit('LOADING_PHASE', false)
                 commit('ADD_ITEMS', {
                     ...newAd,
-                    id: fbValue.key
+                    id: fbValue.key,
+                    src
                 })
             } catch(err) {
                 commit('ERROR_PHASE', err.message)
@@ -70,6 +90,24 @@ export default {
                 commit('LOADING_PHASE', false)
                 throw err
             }
+        },
+        async UPDATE_ADS({commit}, {title, description, id}) {
+            commit('CLEAR_PHASE')
+            commit('LOADING_PHASE', true)
+
+            try {
+
+                await fb.database().ref('ads').child(id).update({
+                    title, description
+                })
+                commit('UPDATE_ADS', {title, description, id})
+                commit('LOADING_PHASE', false)
+
+            } catch(err) {
+                commit('ERROR_PHASE', err.message)
+                commit('LOADING_PHASE', false)
+                throw err
+            }
         }
     },
     getters: {
@@ -79,8 +117,10 @@ export default {
         promoAds(state) {
             return state.ads.filter(p => p.promo)
         },
-        myAds(state) {
-            return state.ads
+        myAds(state, getters) {
+            return state.ads.filter(ad => {
+                return ad.ownerId === getters.user.id
+            })
         },
         getById(state) {
             return adId => {

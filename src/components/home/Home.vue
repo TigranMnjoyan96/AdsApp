@@ -51,12 +51,7 @@
                                 Share
                             </v-btn>
 
-                            <v-btn
-                                    color="orange"
-                                    text
-                            >
-                                Buy
-                            </v-btn>
+                            <shared  :ad="ads" />
                         </v-card-actions>
                     </v-card>
                 </v-flex>
@@ -72,8 +67,6 @@
       color="primary"
       indeterminate
     ></v-progress-circular>
-
-
                 </v-flex>
             </v-layout>
         </v-container>

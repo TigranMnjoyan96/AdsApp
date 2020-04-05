@@ -3,10 +3,12 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import Shared from './components/shared/Shared.vue'
 import * as fb from 'firebase/app'
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
+Vue.component('shared', Shared)
 
 new Vue({
   router,
