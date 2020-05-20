@@ -85,7 +85,7 @@
             isUserLoggedIn() {
                 return this.$store.getters.isUserLoggedIn
             },
-            links() {
+            links() { 
                 if (this.isUserLoggedIn) {
                     return [
                         {
