@@ -1,0 +1,16 @@
+-------------------- Auto-Git Log --------------------
+		Wed May 20 2020 19:25:45 GMT+0400 (Армения, стандартное время)
+------------------------------------------------------
+
+Modified files:
+* src/components/navbar/navbar.vue
+
+
+Created files:
+* .autogit/logs/log-20-4-2020-18-55-36.txt
+
+
+Deleted files:
+
+
+Renamed files:
