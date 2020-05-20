@@ -1,0 +1,15 @@
+-------------------- Auto-Git Log --------------------
+		Wed May 20 2020 18:25:54 GMT+0400 (Армения, стандартное время)
+------------------------------------------------------
+
+Modified files:
+
+
+Created files:
+* .autogit/autogit.json
+
+
+Deleted files:
+
+
+Renamed files:
